@@ -2,14 +2,15 @@ import type { PerfilUsuario, ClientePotencial } from '../types';
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL_NAME = "deepseek/deepseek-chat-v3.1:free";
+const OPENROUTER_API_KEY = "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";
 
-const getHeaders = (apiKey: string | undefined) => {
-  if (!apiKey) {
-    throw new Error("La variable de entorno OPENROUTER_API_KEY no está configurada.");
+const getHeaders = () => {
+  if (!OPENROUTER_API_KEY) {
+    throw new Error("La clave de API de OpenRouter no está configurada.");
   }
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`,
+    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
     // OpenRouter requiere estos encabezados para los modelos gratuitos
     'HTTP-Referer': 'https://aistudio.google.com', 
     'X-Title': 'ServiceMatch',
@@ -58,7 +59,7 @@ export const buscarClientes = async (pais: string, probabilidadMin: number): Pro
 
     const apiResponse = await fetch(OPENROUTER_API_URL, {
         method: 'POST',
-        headers: getHeaders(process.env.OPENROUTER_API_KEY),
+        headers: getHeaders(),
         body: JSON.stringify({
             model: MODEL_NAME,
             messages: [
@@ -155,7 +156,7 @@ export const generarEmail = async (cliente: ClientePotencial, perfil: PerfilUsua
 
     const apiResponse = await fetch(OPENROUTER_API_URL, {
         method: 'POST',
-        headers: getHeaders(process.env.OPENROUTER_API_KEY),
+        headers: getHeaders(),
         body: JSON.stringify({
             model: MODEL_NAME,
             messages: [
